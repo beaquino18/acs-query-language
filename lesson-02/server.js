@@ -49,6 +49,12 @@ const typeDefs = `#graphql
     second: Int!
     minute: Int!
   }
+
+  type Roll {
+    total: Int!
+    sides: Int!
+    rolls: [Int!]!
+  }
   
   type Query {
     allMovies: [Movie!]!
@@ -57,8 +63,13 @@ const typeDefs = `#graphql
     getMovieIndex(id: Int!): Movie
     firstMovie: Movie
     lastMovie: Movie
+    movieCount: Int!
+    moviesInRange(start: Int!, count: Int!): [Movie!]!
+    getMoviesByGenre(genre: Genre!): [Movie!]!
+    allGenres: [Genre!]!
     getTime: Time
     getRandom(range: Int!): Int!
+    getRoll(sides: Int!, rolls: Int!): Roll
   }
 `
 
@@ -83,6 +94,17 @@ const resolvers = {
       const indexLastMovie = movieList.length - 1
       return movieList[indexLastMovie]
     },
+    movieCount: () => movieList.length,
+    moviesInRange: (_, { start, count }) => {
+      return movieList.slice(start, start + count)
+    },
+    getMoviesByGenre: (_, { genre }) => {
+      return movieList.filter(movie => movie.genre === genre)
+    },
+    allGenres: () => {
+      const genres = movieList.map(movie => movie.genre)
+      return [...new Set(genres)]
+    },
     getTime: () => {
       const now = new Date()
       return {
@@ -93,6 +115,14 @@ const resolvers = {
     },
     getRandom: (_, { range} ) => {
       return Math.floor(Math.random() * range)
+    },
+    getRoll: (_, { sides, rolls: numRolls }) => {
+      const results = []
+      for (let i = 0; i < numRolls; i++) {
+        results.push(Math.floor(Math.random() * sides) + 1)
+      }
+      const total = results.reduce((sum, val) => sum + val, 0)
+      return { total, sides, rolls: results }
     }
   }
 }
