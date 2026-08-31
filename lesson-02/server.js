@@ -1,9 +1,16 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 
+
 const typeDefs = `#graphql
   type About {
     message: String!
+  }
+
+  enum MealTime{
+    breakfast
+    lunch
+    dinner
   }
 
   type Meal {
@@ -12,7 +19,7 @@ const typeDefs = `#graphql
     
   type Query {
     getAbout: About
-    getMeal(time: String!): Meal
+    getMeal(time: MealTime!): Meal
   }
 `
 
