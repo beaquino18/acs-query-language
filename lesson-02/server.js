@@ -26,7 +26,7 @@ const typeDefs = `#graphql
     Drama
     Comedy
   }
-
+  
   interface Media {
     title: String!
     genre: Genre!
@@ -43,12 +43,22 @@ const typeDefs = `#graphql
     genre: Genre!
     seasons: Int!
   }
+
+  type Time {
+    hour: Int!
+    second: Int!
+    minute: Int!
+  }
   
   type Query {
     allMovies: [Movie!]!
     allTVShows: [TVShow!]!
     search: [Media!]!
     getMovieIndex(id: Int!): Movie
+    firstMovie: Movie
+    lastMovie: Movie
+    getTime: Time
+    getRandom(range: Int!): Int!
   }
 `
 
@@ -67,6 +77,22 @@ const resolvers = {
     search: () => [...movieList, ...tvShowList],
     getMovieIndex: (_, { id }) => {
       return movieList[id]
+    },
+    firstMovie: () => movieList[0],
+    lastMovie: () => {
+      const indexLastMovie = movieList.length - 1
+      return movieList[indexLastMovie]
+    },
+    getTime: () => {
+      const now = new Date()
+      return {
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        second: now.getSeconds()
+      }
+    },
+    getRandom: (_, { range} ) => {
+      return Math.floor(Math.random() * range)
     }
   }
 }
