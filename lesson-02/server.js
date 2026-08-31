@@ -12,7 +12,7 @@ const typeDefs = `#graphql
     
   type Query {
     getAbout: About
-    getMeal: Meal
+    getMeal(time: String!): Meal
   }
 `
 
@@ -22,8 +22,9 @@ const resolvers = {
     getAbout: () => {
       return { message: 'Hello World' }
     },
-    getMeal: () => {
-      return { description: 'Noodles' }
+    getMeal: (_, { time }) => {
+      const allMeals = { breakfast: 'toast', lunch: 'noodles', dinner: 'pizza'}
+      return { description: allMeals[time] }
     },
   }
 }
