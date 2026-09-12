@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { gql } from '@apollo/client'
 import { client } from './apolloClient'
+import WeatherInfo from './WeatherInfo'
 
 function Weather() {
   const [ zip, setZip ] = useState('')
@@ -15,6 +16,13 @@ function Weather() {
             getWeather(zip: $zip, units: $units) {
               temperature
               description
+              feels_like
+              temp_min
+              temp_max
+              pressure
+              humidity
+              cod
+              message
             }
           }
         `,
@@ -29,7 +37,7 @@ function Weather() {
   return (
     <div className="Weather">
 
-      {weather ? <h1>{weather.data.getWeather.temperature}</h1>: null}
+      <div>{renderWeatherContent(weather)}</div>
 
       <form onSubmit={(e) => {
         e.preventDefault()
@@ -44,5 +52,28 @@ function Weather() {
     </div>
   )
 }
+
+function renderWeatherContent(weather) {
+  if (!weather) return null
+
+  const w = weather.data.getWeather
+  if (w.cod !== "200") {
+    return w.message
+  }
+
+  return (
+    <WeatherInfo
+      temp={w.temperature}
+      description={w.description}
+      feels_like={w.feels_like}
+      temp_min={w.temp_min}
+      temp_max={w.temp_max}
+      pressure={w.pressure}
+      humidity={w.humidity}
+    />
+  )
+}
+
+
 
 export default Weather
