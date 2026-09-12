@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { gql } from '@apollo/client'
 import { client } from './apolloClient'
 import WeatherInfo from './WeatherInfo'
+import './Weather.css'
 
 function Weather() {
   const [ zip, setZip ] = useState('')
-  const [ units, setUnits ] = useState('')
+  const [ units, setUnits ] = useState('metric')
   const [ weather, setWeather ] = useState(null)
 
   async function getWeather() {
@@ -26,7 +27,7 @@ function Weather() {
             }
           }
         `,
-        variables: { zip: parseInt(zip, 10), units: 'metric'}
+        variables: { zip: parseInt(zip, 10), units}
       })
       setWeather(json)
     } catch(err) {
@@ -37,16 +38,45 @@ function Weather() {
   return (
     <div className="Weather">
 
+      <h1 className="title">What's the weather today?</h1>
+
       <div>{renderWeatherContent(weather)}</div>
 
       <form onSubmit={(e) => {
         e.preventDefault()
         getWeather()
       }}>
+        <label htmlFor="zip">Type zip code</label>
         <input
+          id="zip"
           value={zip}
           onChange={(e) => setZip(e.target.value)}
         />
+
+        <div className="units">
+          <label>
+            <input
+              type="radio"
+              name="units"
+              value="metric"
+              checked={units === 'metric'}
+              onChange={() => setUnits('metric')}
+            />
+            Metric
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="units"
+              value="imperial"
+              checked={units === 'imperial'}
+              onChange={() => setUnits('imperial')}
+            />
+            Imperial
+          </label>
+        </div>
+
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -58,7 +88,7 @@ function renderWeatherContent(weather) {
 
   const w = weather.data.getWeather
   if (w.cod !== "200") {
-    return w.message
+    return <p className="error">{w.message}</p>
   }
 
   return (
@@ -73,7 +103,5 @@ function renderWeatherContent(weather) {
     />
   )
 }
-
-
 
 export default Weather
