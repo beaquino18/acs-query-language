@@ -1,0 +1,94 @@
+.Weather {
+  max-width: 360px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  font-family: system-ui, sans-serif;
+}
+
+.Weather .title {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.Weather form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.Weather label {
+  font-size: 13px;
+  color: #777;
+}
+
+.Weather input:not([type="radio"]) {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.Weather input:focus-visible {
+  outline: 2px solid #6a5acd;
+  outline-offset: 2px;
+}
+
+.Weather .units {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.Weather .units label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.Weather input[type="radio"] {
+  accent-color: #6a5acd;
+}
+
+.Weather button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #6a5acd;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.Weather button:hover {
+  background: #5a4bbf;
+}
+
+.Weather .error {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.WeatherInfo h1 {
+  margin: 0 0 8px;
+  font-size: 40px;
+}
+
+.WeatherInfo p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
