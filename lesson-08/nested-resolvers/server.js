@@ -53,6 +53,10 @@ const typeDefs = `#graphql
     episode(id: ID!): Episode
     episodes: [Episode!]!
   }
+  
+  type Mutation {
+    addCharacter(name: String!, status: String!, originId: ID!, locationId: ID!): Character!
+  }
 `
 
 const resolvers = {
@@ -83,6 +87,13 @@ const resolvers = {
   Episode: {
     characters: (parent) => {
       return parent.characterIds.map(id => characters.find(c => c.id === id))
+    }
+  },
+  Mutation: {
+    addCharacter: (_, { name, status, originId, locationId }) => {
+      const character = { id: String(characters.length + 1), name, status, originId, locationId }
+      characters.push(character)
+      return character
     }
   }
 }
