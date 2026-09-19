@@ -1,50 +1,43 @@
 import { useState } from 'react'
 import { gql } from '@apollo/client'
-import { client } from './apolloClient'
+import { useLazyQuery } from '@apollo/client/react'
 import WeatherInfo from './WeatherInfo'
 import './Weather.css'
+
+const GET_WEATHER = gql `
+  query GetWeather($zip: Int!, $units: Units!) {
+    getWeather(zip: $zip, units: $units) {
+      temperature
+      description
+      feels_like
+      temp_min
+      temp_max
+      pressure
+      humidity
+      cod
+      message
+    }
+  }
+`
 
 function Weather() {
   const [ zip, setZip ] = useState('')
   const [ units, setUnits ] = useState('metric')
-  const [ weather, setWeather ] = useState(null)
+  const [ getWeather, { loading, error, data } ] = useLazyQuery(GET_WEATHER)
 
-  async function getWeather() {
-    try {
-      const json = await client.query({
-        query: gql`
-          query GetWeather($zip: Int!, $units: Units!) {
-            getWeather(zip: $zip, units: $units) {
-              temperature
-              description
-              feels_like
-              temp_min
-              temp_max
-              pressure
-              humidity
-              cod
-              message
-            }
-          }
-        `,
-        variables: { zip: parseInt(zip, 10), units}
-      })
-      setWeather(json)
-    } catch(err) {
-      console.log(err.message)
-    }
-  }
 
   return (
     <div className="Weather">
 
       <h1 className="title">What's the weather today?</h1>
 
-      <div>{renderWeatherContent(weather)}</div>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      <div>{renderWeatherContent(data)}</div>
 
       <form onSubmit={(e) => {
         e.preventDefault()
-        getWeather()
+        getWeather({ variables: { zip: parseInt(zip, 10), units} })
       }}>
         <label htmlFor="zip">Type zip code</label>
         <input
@@ -86,12 +79,13 @@ function Weather() {
 function renderWeatherContent(weather) {
   if (!weather) return null
 
-  const w = weather.data.getWeather
+  const w = weather.getWeather
   if (w.cod !== "200") {
     return <p className="error">{w.message}</p>
   }
 
   return (
+
     <WeatherInfo
       temp={w.temperature}
       description={w.description}
